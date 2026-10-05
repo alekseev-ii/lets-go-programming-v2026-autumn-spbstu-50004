@@ -1,10 +1,12 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
 	"io"
 	"os"
+	"path/filepath"
 	"sort"
 	"strconv"
 	"strings"
@@ -21,10 +23,10 @@ type Config struct {
 }
 
 type Valute struct {
-	NumCode    string  `xml:"NumCode"`
-	CharCode   string  `xml:"CharCode"`
-	Value      string  `xml:"Value"`
-	ValueFloat float64 `xml:"-"`
+	NumCode    string  `xml:"NumCode" json:"num_code"`
+	CharCode   string  `xml:"CharCode" json:"char_code"`
+	Value      string  `xml:"Value" json:"-"`
+	ValueFloat float64 `xml:"-" json:"value"`
 }
 
 type ValCurs struct {
@@ -90,7 +92,17 @@ func main() {
 		return valCurs.Valutes[i].ValueFloat > valCurs.Valutes[j].ValueFloat
 	})
 
-	for _, val := range valCurs.Valutes {
-		fmt.Println(val.NumCode, val.CharCode, val.Value)
+	outDir := filepath.Dir(cfg.OutputFile)
+	err = os.MkdirAll(outDir, 0755)
+	if err != nil {
+		panic(fmt.Sprintf("error creating output directory: %s", err))
+	}
+	result, err := json.MarshalIndent(&valCurs.Valutes, "", "\t")
+	if err != nil {
+		panic(fmt.Sprintf("error marshaling valCurs: %s", err))
+	}
+	err = os.WriteFile(cfg.OutputFile, result, 0644)
+	if err != nil {
+		panic(fmt.Sprintf("error creating output file: %s", err))
 	}
 }
