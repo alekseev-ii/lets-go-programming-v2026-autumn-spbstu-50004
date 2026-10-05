@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"sort"
+	"strconv"
 	"strings"
 
 	"encoding/xml"
@@ -19,9 +21,10 @@ type Config struct {
 }
 
 type Valute struct {
-	NumCode  string `xml:"NumCode"`
-	CharCode string `xml:"CharCode"`
-	Value    string `xml:"Value"`
+	NumCode    string  `xml:"NumCode"`
+	CharCode   string  `xml:"CharCode"`
+	Value      string  `xml:"Value"`
+	ValueFloat float64 `xml:"-"`
 }
 
 type ValCurs struct {
@@ -38,6 +41,11 @@ func charsetReader(charset string, input io.Reader) (io.Reader, error) {
 	default:
 		return nil, fmt.Errorf("unknown charset: %s", charset)
 	}
+}
+
+func parseValue(s string) (float64, error) {
+	normalized := strings.ReplaceAll(s, ",", ".")
+	return strconv.ParseFloat(normalized, 64)
 }
 
 func main() {
@@ -69,8 +77,20 @@ func main() {
 		panic(fmt.Sprintf("error parsing config file: %s", err))
 	}
 
-	fmt.Println(len(valCurs.Valutes))
-	fmt.Println(valCurs.Valutes[0].NumCode)
-	fmt.Println(valCurs.Valutes[0].CharCode)
-	fmt.Println(valCurs.Valutes[0].Value)
+	for i := range valCurs.Valutes {
+		sVal := valCurs.Valutes[i].Value
+		val, err := parseValue(sVal)
+		if err != nil {
+			panic(fmt.Sprintf("error parsing valute value (%s): %s", sVal, err))
+		}
+		valCurs.Valutes[i].ValueFloat = val
+	}
+
+	sort.Slice(valCurs.Valutes, func(i, j int) bool {
+		return valCurs.Valutes[i].ValueFloat > valCurs.Valutes[j].ValueFloat
+	})
+
+	for _, val := range valCurs.Valutes {
+		fmt.Println(val.NumCode, val.CharCode, val.Value)
+	}
 }
