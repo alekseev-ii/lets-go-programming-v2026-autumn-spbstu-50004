@@ -3,22 +3,24 @@ package main
 import "fmt"
 
 func main() {
-	var n int
-	_, err := fmt.Scan(&n)
+	var departmentCount int
+	_, err := fmt.Scan(&departmentCount)
 	if err != nil {
 		fmt.Println("Invalid department number")
+
 		return
 	}
 
-	for i := 0; i < n; i++ {
-		var k int
-		_, err = fmt.Scan(&k)
+	for range departmentCount {
+		var employeeCount int
+		_, err = fmt.Scan(&employeeCount)
 		if err != nil {
 			fmt.Println("Invalid employee number")
+
 			return
 		}
-		minT, maxT := 15, 30
-		for j := 0; j < k; j++ {
+		minTemperature, maxTemperature := 15, 30
+		for range employeeCount {
 			var (
 				dest string
 				val  int
@@ -26,20 +28,25 @@ func main() {
 			_, err = fmt.Scan(&dest, &val)
 			if err != nil {
 				fmt.Println("Bad temperature input")
+
 				return
 			}
-			if dest == "<=" {
-				maxT = min(maxT, val)
-			} else if dest == ">=" {
-				minT = max(minT, val)
-			} else {
+
+			switch dest {
+			case "<=":
+				maxTemperature = min(maxTemperature, val)
+			case ">=":
+				minTemperature = max(minTemperature, val)
+			default:
 				fmt.Println("Bad temperature input")
+
 				return
 			}
-			if maxT < minT {
+
+			if maxTemperature < minTemperature {
 				fmt.Println(-1)
 			} else {
-				fmt.Println(minT)
+				fmt.Println(minTemperature)
 			}
 		}
 	}
