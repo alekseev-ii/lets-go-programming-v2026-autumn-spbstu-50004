@@ -10,6 +10,7 @@ func toInt(x any) int {
 	if !ok {
 		panic("not int")
 	}
+
 	return v
 }
 
