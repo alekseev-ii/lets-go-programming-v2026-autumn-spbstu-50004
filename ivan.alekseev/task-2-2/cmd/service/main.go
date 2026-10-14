@@ -5,6 +5,14 @@ import (
 	"fmt"
 )
 
+func toInt(x any) int {
+	v, ok := x.(int)
+	if !ok {
+		panic("not int")
+	}
+	return v
+}
+
 type IntHeap []int
 
 func (h *IntHeap) Len() int { return len(*h) }
@@ -14,10 +22,7 @@ func (h *IntHeap) Less(i, j int) bool { return (*h)[i] > (*h)[j] }
 func (h *IntHeap) Swap(i, j int) { (*h)[i], (*h)[j] = (*h)[j], (*h)[i] }
 
 func (h *IntHeap) Push(x any) {
-	v, ok := x.(int)
-	if !ok {
-		panic("not int")
-	}
+	v := toInt(x)
 	*h = append(*h, v)
 }
 
@@ -68,5 +73,5 @@ func main() {
 		heap.Pop(ratesHeap)
 	}
 
-	fmt.Println(heap.Pop(ratesHeap))
+	fmt.Println(toInt(heap.Pop(ratesHeap)))
 }
