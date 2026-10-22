@@ -17,8 +17,12 @@ type IntHeap []int
 
 func (h *IntHeap) Len() int { return len(*h) }
 
+func (h *IntHeap) inRange(i, j int) bool {
+	return (i >= 0 || i < len(*h)) || (j >= 0 || j < len(*h))
+}
+
 func (h *IntHeap) Less(i, j int) bool {
-	if (i < 0 || i >= len(*h)) || (j < 0 || j >= len(*h)) {
+	if !h.inRange(i, j) {
 		return false
 	}
 
@@ -26,7 +30,7 @@ func (h *IntHeap) Less(i, j int) bool {
 }
 
 func (h *IntHeap) Swap(i, j int) {
-	if (i < 0 || i >= len(*h)) || (j < 0 || j >= len(*h)) {
+	if !h.inRange(i, j) {
 		return
 	}
 

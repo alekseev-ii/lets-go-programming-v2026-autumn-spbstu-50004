@@ -51,6 +51,8 @@ func main() {
 	value, err := intheap.ToInt(heap.Pop(ratesHeap))
 	if err != nil {
 		fmt.Println(err)
+
+		return
 	}
 
 	fmt.Println(value)
