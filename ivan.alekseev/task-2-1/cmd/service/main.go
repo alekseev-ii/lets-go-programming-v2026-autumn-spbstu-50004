@@ -34,17 +34,7 @@ func (c *conditioner) getTemp() int {
 	return c.low
 }
 
-func (c *conditioner) parseCommand() error {
-	var (
-		dest string
-		temp int
-	)
-
-	_, err := fmt.Scan(&dest, &temp)
-	if err != nil {
-		return fmt.Errorf("%w: %w", errBadTemperatureInput, err)
-	}
-
+func (c *conditioner) update(dest string, temp int) error {
 	switch dest {
 	case "<=":
 		c.setHigh(temp)
@@ -80,7 +70,19 @@ func main() {
 		currentConditioner := conditioner{minTemperature, maxTemperature}
 
 		for range employeeCount {
-			err = currentConditioner.parseCommand()
+			var (
+				dest string
+				temp int
+			)
+
+			_, err := fmt.Scan(&dest, &temp)
+			if err != nil {
+				fmt.Println(err.Error())
+
+				return
+			}
+
+			err = currentConditioner.update(dest, temp)
 			if err != nil {
 				fmt.Println(err.Error())
 
