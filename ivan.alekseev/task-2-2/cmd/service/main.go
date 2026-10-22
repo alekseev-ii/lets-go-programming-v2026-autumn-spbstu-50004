@@ -4,7 +4,7 @@ import (
 	"container/heap"
 	"fmt"
 
-	"github.com/alekseev.ii/task-2-2/internal/intHeap"
+	"github.com/alekseev.ii/task-2-2/internal/intheap"
 )
 
 func main() {
@@ -14,7 +14,7 @@ func main() {
 		targetRatePlace int
 	)
 
-	ratesHeap := &intHeap.IntHeap{}
+	ratesHeap := &intheap.IntHeap{}
 
 	if _, err := fmt.Scan(&numberOfDishes); err != nil {
 		fmt.Println(err)
@@ -38,7 +38,7 @@ func main() {
 		return
 	}
 
-	if targetRatePlace >= numberOfDishes {
+	if targetRatePlace < 1 || targetRatePlace > numberOfDishes {
 		fmt.Println("Not enough dishes")
 
 		return
@@ -48,7 +48,7 @@ func main() {
 		heap.Pop(ratesHeap)
 	}
 
-	value, err := intHeap.ToInt(heap.Pop(ratesHeap))
+	value, err := intheap.ToInt(heap.Pop(ratesHeap))
 	if err != nil {
 		fmt.Println(err)
 	}

@@ -1,13 +1,13 @@
-package intHeap
+package intheap
 
 import "errors"
 
-var ErrorNotInteger = errors.New("not an integer")
+var ErrNotInteger = errors.New("not an integer")
 
 func ToInt(x any) (int, error) {
 	v, ok := x.(int)
 	if !ok {
-		return 0, ErrorNotInteger
+		return 0, ErrNotInteger
 	}
 
 	return v, nil
@@ -46,6 +46,7 @@ func (h *IntHeap) Pop() any {
 	if len(*h) == 0 {
 		return nil
 	}
+
 	old := *h
 	n := len(old)
 	x := old[n-1]
