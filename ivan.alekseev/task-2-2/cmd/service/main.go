@@ -4,7 +4,7 @@ import (
 	"container/heap"
 	"fmt"
 
-	"github.com/alekseev.ii/task-2-2/cmd/internal/intHeap"
+	"github.com/alekseev.ii/task-2-2/internal/intHeap"
 )
 
 func main() {
