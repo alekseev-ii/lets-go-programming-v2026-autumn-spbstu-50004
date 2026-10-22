@@ -30,6 +30,7 @@ func (c *conditioner) getTemp() int {
 	if c.low > c.high {
 		return noTemperature
 	}
+
 	return c.low
 }
 
@@ -38,10 +39,13 @@ func (c *conditioner) parseCommand() error {
 		dest string
 		temp int
 	)
+
 	_, err := fmt.Scan(&dest, &temp)
 	if err != nil {
+
 		return fmt.Errorf("%w: %w", errBadTemperatureInput, err)
 	}
+
 	switch dest {
 	case "<=":
 		c.setHigh(temp)
@@ -50,6 +54,7 @@ func (c *conditioner) parseCommand() error {
 	default:
 		return errBadTemperatureInput
 	}
+
 	return nil
 }
 
