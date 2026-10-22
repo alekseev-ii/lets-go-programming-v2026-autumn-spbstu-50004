@@ -3,38 +3,9 @@ package main
 import (
 	"container/heap"
 	"fmt"
+
+	"github.com/alekseev.ii/task-2-2/cmd/internal/intHeap"
 )
-
-func toInt(x any) int {
-	v, ok := x.(int)
-	if !ok {
-		panic("not int")
-	}
-
-	return v
-}
-
-type IntHeap []int
-
-func (h *IntHeap) Len() int { return len(*h) }
-
-func (h *IntHeap) Less(i, j int) bool { return (*h)[i] > (*h)[j] }
-
-func (h *IntHeap) Swap(i, j int) { (*h)[i], (*h)[j] = (*h)[j], (*h)[i] }
-
-func (h *IntHeap) Push(x any) {
-	v := toInt(x)
-	*h = append(*h, v)
-}
-
-func (h *IntHeap) Pop() any {
-	old := *h
-	n := len(old)
-	x := old[n-1]
-	*h = old[0 : n-1]
-
-	return x
-}
 
 func main() {
 	var (
@@ -43,7 +14,7 @@ func main() {
 		targetRatePlace int
 	)
 
-	ratesHeap := &IntHeap{}
+	ratesHeap := &intHeap.IntHeap{}
 
 	_, err := fmt.Scan(&numberOfDishes)
 	if err != nil {
@@ -74,5 +45,5 @@ func main() {
 		heap.Pop(ratesHeap)
 	}
 
-	fmt.Println(toInt(heap.Pop(ratesHeap)))
+	fmt.Println(intHeap.ToInt(heap.Pop(ratesHeap)))
 }
