@@ -2,6 +2,12 @@ package main
 
 import "fmt"
 
+const (
+	minTemperature = 15
+	maxTemperature = 30
+	noTemperature  = -1
+)
+
 type conditioner struct {
 	low  int
 	high int
@@ -17,7 +23,7 @@ func (c *conditioner) setLow(temp int) {
 
 func (c *conditioner) getTemp() int {
 	if c.low > c.high {
-		return -1
+		return noTemperature
 	}
 	return c.low
 }
@@ -42,7 +48,7 @@ func main() {
 			return
 		}
 
-		currentConditioner := conditioner{15, 30}
+		currentConditioner := conditioner{minTemperature, maxTemperature}
 
 		for range employeeCount {
 			var (
