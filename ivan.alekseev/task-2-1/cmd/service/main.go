@@ -2,6 +2,26 @@ package main
 
 import "fmt"
 
+type conditioner struct {
+	low  int
+	high int
+}
+
+func (c *conditioner) setHigh(temp int) {
+	c.high = min(c.high, temp)
+}
+
+func (c *conditioner) setLow(temp int) {
+	c.low = max(c.low, temp)
+}
+
+func (c *conditioner) getTemp() int {
+	if c.low > c.high {
+		return -1
+	}
+	return c.low
+}
+
 func main() {
 	var departmentCount int
 
@@ -22,7 +42,7 @@ func main() {
 			return
 		}
 
-		minTemperature, maxTemperature := 15, 30
+		currentConditioner := conditioner{15, 30}
 
 		for range employeeCount {
 			var (
@@ -39,20 +59,16 @@ func main() {
 
 			switch dest {
 			case "<=":
-				maxTemperature = min(maxTemperature, val)
+				currentConditioner.setHigh(val)
 			case ">=":
-				minTemperature = max(minTemperature, val)
+				currentConditioner.setLow(val)
 			default:
 				fmt.Println("Bad temperature input")
 
 				return
 			}
 
-			if maxTemperature < minTemperature {
-				fmt.Println(-1)
-			} else {
-				fmt.Println(minTemperature)
-			}
+			fmt.Println(currentConditioner.getTemp())
 		}
 	}
 }
