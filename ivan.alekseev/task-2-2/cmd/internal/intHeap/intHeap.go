@@ -1,24 +1,44 @@
 package intHeap
 
-func ToInt(x any) int {
+import "errors"
+
+var ErrorNotInteger = errors.New("not an integer")
+
+func ToInt(x any) (int, error) {
 	v, ok := x.(int)
 	if !ok {
-		panic("not int")
+		return 0, ErrorNotInteger
 	}
 
-	return v
+	return v, nil
 }
 
 type IntHeap []int
 
 func (h *IntHeap) Len() int { return len(*h) }
 
-func (h *IntHeap) Less(i, j int) bool { return (*h)[i] > (*h)[j] }
+func (h *IntHeap) Less(i, j int) bool {
+	if (i < 0 || i >= len(*h)) || (j < 0 || j >= len(*h)) {
+		return false
+	}
 
-func (h *IntHeap) Swap(i, j int) { (*h)[i], (*h)[j] = (*h)[j], (*h)[i] }
+	return (*h)[i] > (*h)[j]
+}
+
+func (h *IntHeap) Swap(i, j int) {
+	if (i < 0 || i >= len(*h)) || (j < 0 || j >= len(*h)) {
+		return
+	}
+
+	(*h)[i], (*h)[j] = (*h)[j], (*h)[i]
+}
 
 func (h *IntHeap) Push(x any) {
-	v := ToInt(x)
+	v, err := ToInt(x)
+	if err != nil {
+		return
+	}
+
 	*h = append(*h, v)
 }
 
