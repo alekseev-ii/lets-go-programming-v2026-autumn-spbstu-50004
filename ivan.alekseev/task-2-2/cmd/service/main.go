@@ -16,16 +16,14 @@ func main() {
 
 	ratesHeap := &intHeap.IntHeap{}
 
-	_, err := fmt.Scan(&numberOfDishes)
-	if err != nil {
+	if _, err := fmt.Scan(&numberOfDishes); err != nil {
 		fmt.Println(err)
 
 		return
 	}
 
 	for range numberOfDishes {
-		_, err := fmt.Scan(&currentRate)
-		if err != nil {
+		if _, err := fmt.Scan(&currentRate); err != nil {
 			fmt.Println(err)
 
 			return
@@ -34,9 +32,14 @@ func main() {
 		heap.Push(ratesHeap, currentRate)
 	}
 
-	_, err = fmt.Scan(&targetRatePlace)
-	if err != nil {
+	if _, err := fmt.Scan(&targetRatePlace); err != nil {
 		fmt.Println(err)
+
+		return
+	}
+
+	if targetRatePlace >= numberOfDishes {
+		fmt.Println("Not enough dishes")
 
 		return
 	}
@@ -45,5 +48,10 @@ func main() {
 		heap.Pop(ratesHeap)
 	}
 
-	fmt.Println(intHeap.ToInt(heap.Pop(ratesHeap)))
+	value, err := intHeap.ToInt(heap.Pop(ratesHeap))
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	fmt.Println(value)
 }
