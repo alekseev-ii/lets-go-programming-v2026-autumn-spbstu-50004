@@ -42,7 +42,6 @@ func (c *conditioner) parseCommand() error {
 
 	_, err := fmt.Scan(&dest, &temp)
 	if err != nil {
-
 		return fmt.Errorf("%w: %w", errBadTemperatureInput, err)
 	}
 
