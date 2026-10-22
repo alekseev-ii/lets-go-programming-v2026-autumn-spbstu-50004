@@ -1,12 +1,17 @@
 package main
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+)
 
 const (
 	minTemperature = 15
 	maxTemperature = 30
 	noTemperature  = -1
 )
+
+var errBadTemperatureInput = errors.New("bad temperature input")
 
 type conditioner struct {
 	low  int
@@ -26,6 +31,26 @@ func (c *conditioner) getTemp() int {
 		return noTemperature
 	}
 	return c.low
+}
+
+func (c *conditioner) parseCommand() error {
+	var (
+		dest string
+		temp int
+	)
+	_, err := fmt.Scan(&dest, &temp)
+	if err != nil {
+		return fmt.Errorf("%w: %w", errBadTemperatureInput, err)
+	}
+	switch dest {
+	case "<=":
+		c.setHigh(temp)
+	case ">=":
+		c.setLow(temp)
+	default:
+		return errBadTemperatureInput
+	}
+	return nil
 }
 
 func main() {
@@ -51,25 +76,9 @@ func main() {
 		currentConditioner := conditioner{minTemperature, maxTemperature}
 
 		for range employeeCount {
-			var (
-				dest string
-				val  int
-			)
-
-			_, err = fmt.Scan(&dest, &val)
+			err = currentConditioner.parseCommand()
 			if err != nil {
-				fmt.Println("Bad temperature input")
-
-				return
-			}
-
-			switch dest {
-			case "<=":
-				currentConditioner.setHigh(val)
-			case ">=":
-				currentConditioner.setLow(val)
-			default:
-				fmt.Println("Bad temperature input")
+				fmt.Println(err.Error())
 
 				return
 			}
