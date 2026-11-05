@@ -1,6 +1,7 @@
 package valCurs
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 )
@@ -20,7 +21,7 @@ func ParseValue(sValue string) (float64, error) {
 func (v *Valute) ParseValue() error {
 	vFloat64, err := ParseValue(v.Value)
 	if err != nil {
-		return err
+		return fmt.Errorf("error parsing value (%s): %w", v.Value, err)
 	}
 	v.ValueFloat = vFloat64
 	return nil

@@ -15,14 +15,14 @@ func main() {
 
 	cfg, err := config.NewConfig(*configPath)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Printf("Error opening config: %s\n", err)
 
 		return
 	}
 
 	inputFile, err := cfg.OpenInputFile()
 	if err != nil {
-		fmt.Println(err)
+		fmt.Printf("Error open input file: %s\n", err)
 
 		return
 	}
@@ -30,14 +30,14 @@ func main() {
 
 	valCurses, err := valCurs.NewValCurs(inputFile)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Printf("Error parsing ValCurs: %s\n", err)
 
 		return
 	}
 
 	err = valCurses.ParseValues()
 	if err != nil {
-		fmt.Println(err)
+		fmt.Printf("Error parsing values: %s\n", err)
 
 		return
 	}
@@ -45,7 +45,7 @@ func main() {
 	valCurses.SortByGreaterValue()
 	err = valCurses.Save(cfg.OutputFile)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Printf("Error saving result: %s\n", err)
 
 		return
 	}
