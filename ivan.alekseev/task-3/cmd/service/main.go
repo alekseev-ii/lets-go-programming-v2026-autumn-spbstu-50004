@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/ivan.alekseev/task-3/internal/config"
+	"github.com/ivan.alekseev/task-3/internal/valCurs"
 )
 
 func main() {
@@ -19,6 +20,31 @@ func main() {
 		return
 	}
 
-	fmt.Println(cfg.InputFile)
-	fmt.Println(cfg.OutputFile)
+	inputFile, err := cfg.OpenInputFile()
+	if err != nil {
+		fmt.Println(err)
+
+		return
+	}
+	defer inputFile.Close()
+
+	valCurses, err := valCurs.NewValCurs(inputFile)
+	if err != nil {
+		fmt.Println(err)
+
+		return
+	}
+
+	err = valCurses.ParseValues()
+	if err != nil {
+		fmt.Println(err)
+
+		return
+	}
+
+	valCurses.SortByGreaterValue()
+	for i := range valCurses.Valutes {
+		fmt.Println(valCurses.Valutes[i].CharCode)
+	}
+
 }
