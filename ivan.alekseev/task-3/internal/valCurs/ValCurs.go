@@ -1,10 +1,12 @@
 package valCurs
 
 import (
+	"encoding/json"
 	"encoding/xml"
 	"fmt"
 	"io"
 	"os"
+	"path/filepath"
 	"sort"
 	"strings"
 
@@ -49,4 +51,19 @@ func (vc *ValCurs) SortByGreaterValue() {
 	sort.Slice(vc.Valutes, func(i, j int) bool {
 		return vc.Valutes[i].ValueFloat > vc.Valutes[j].ValueFloat
 	})
+}
+
+func (vc *ValCurs) Save(outputFile string) error {
+	outDir := filepath.Dir(outputFile)
+
+	err := os.MkdirAll(outDir, 0755)
+	if err != nil {
+		return err
+	}
+	result, err := json.MarshalIndent(&vc.Valutes, "", "\t")
+	if err != nil {
+		return err
+	}
+
+	return os.WriteFile(outputFile, result, 0644)
 }

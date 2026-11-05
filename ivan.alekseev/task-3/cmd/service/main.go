@@ -43,8 +43,11 @@ func main() {
 	}
 
 	valCurses.SortByGreaterValue()
-	for i := range valCurses.Valutes {
-		fmt.Println(valCurses.Valutes[i].CharCode)
+	err = valCurses.Save(cfg.OutputFile)
+	if err != nil {
+		fmt.Println(err)
+
+		return
 	}
 
 }
