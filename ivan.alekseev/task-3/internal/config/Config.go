@@ -7,8 +7,8 @@ import (
 )
 
 type Config struct {
-	inputFile  string `yaml:"input-file"`
-	outputFile string `yaml:"output-file"`
+	InputFile  string `yaml:"input-file"`
+	OutputFile string `yaml:"output-file"`
 }
 
 func NewConfig(configPath string) (Config, error) {
@@ -24,10 +24,10 @@ func NewConfig(configPath string) (Config, error) {
 
 func (c *Config) OpenInputFile() (*os.File, error) {
 
-	return os.Open(c.inputFile)
+	return os.Open(c.InputFile)
 }
 
 func (c *Config) OpenOutputFile() (*os.File, error) {
 
-	return os.Open(c.outputFile)
+	return os.Open(c.OutputFile)
 }
