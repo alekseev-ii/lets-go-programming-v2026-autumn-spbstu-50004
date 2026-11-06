@@ -1,4 +1,4 @@
-package valCurs
+package valcurs
 
 import (
 	"fmt"
@@ -7,14 +7,15 @@ import (
 )
 
 type Valute struct {
-	NumCode    string  `xml:"NumCode" json:"num_code"`
-	CharCode   string  `xml:"CharCode" json:"char_code"`
-	Value      string  `xml:"Value" json:"-"`
-	ValueFloat float64 `xml:"-" json:"value"`
+	NumCode    string  `json:"num_code" xml:"NumCode"`
+	CharCode   string  `json:"char_code" xml:"CharCode"`
+	Value      string  `json:"-" xml:"Value"`
+	ValueFloat float64 `json:"value" xml:"-"`
 }
 
 func ParseValue(sValue string) (float64, error) {
 	normalized := strings.ReplaceAll(sValue, ",", ".")
+
 	return strconv.ParseFloat(normalized, 64)
 }
 
@@ -24,5 +25,6 @@ func (v *Valute) ParseValue() error {
 		return fmt.Errorf("error parsing value (%s): %w", v.Value, err)
 	}
 	v.ValueFloat = vFloat64
+
 	return nil
 }

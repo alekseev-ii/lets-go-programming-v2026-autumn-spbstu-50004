@@ -13,12 +13,16 @@ type Config struct {
 
 func NewConfig(configPath string) (Config, error) {
 	var cfg Config
+
 	data, err := os.ReadFile(configPath)
+
 	if err != nil {
+
 		return cfg, err
 	}
 
 	err = yaml.Unmarshal(data, &cfg)
+
 	return cfg, err
 }
 

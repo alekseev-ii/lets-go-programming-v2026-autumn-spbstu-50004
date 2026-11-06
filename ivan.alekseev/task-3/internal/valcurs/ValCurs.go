@@ -1,4 +1,4 @@
-package valCurs
+package valcurs
 
 import (
 	"encoding/json"
@@ -31,24 +31,32 @@ func CharsetReader(charset string, input io.Reader) (io.Reader, error) {
 
 func NewValCurs(sourceFile *os.File) (ValCurs, error) {
 	decoder := xml.NewDecoder(sourceFile)
+
 	decoder.CharsetReader = CharsetReader
+
 	var valCurs ValCurs
+
 	err := decoder.Decode(&valCurs)
+
 	return valCurs, err
 }
 
 func (vc *ValCurs) ParseValues() error {
 	for i := range vc.Valutes {
 		err := vc.Valutes[i].ParseValue()
+
 		if err != nil {
+
 			return err
 		}
 	}
+
 	return nil
 }
 
 func (vc *ValCurs) SortByGreaterValue() {
 	sort.Slice(vc.Valutes, func(i, j int) bool {
+
 		return vc.Valutes[i].ValueFloat > vc.Valutes[j].ValueFloat
 	})
 }
@@ -57,13 +65,17 @@ func (vc *ValCurs) Save(outputFile string) error {
 	outDir := filepath.Dir(outputFile)
 
 	err := os.MkdirAll(outDir, 0755)
+
 	if err != nil {
+
 		return err
 	}
 	result, err := json.MarshalIndent(&vc.Valutes, "", "\t")
+
 	if err != nil {
+
 		return err
 	}
 
-	return os.WriteFile(outputFile, result, 0644)
+	return os.WriteFile(outputFile, result, 0o600)
 }
