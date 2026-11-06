@@ -15,48 +15,36 @@ func main() {
 	flag.Parse()
 
 	cfg, err := config.NewConfig(*configPath)
-
 	if err != nil {
-		panic("no such file or directory " + *configPath)
+		panic(fmt.Errorf("load config: %w", err))
 	}
 
 	inputFile, err := cfg.OpenInputFile()
-
 	if err != nil {
-		panic("no such file or directory " + cfg.InputFile)
+		panic(fmt.Errorf("open input: %w", err))
 	}
 
 	defer func(inputFile *os.File) {
 		err := inputFile.Close()
 		if err != nil {
-			panic("error closing file " + cfg.InputFile)
+			panic(fmt.Errorf("close input: %w", err))
 		}
 	}(inputFile)
 
 	valCurses, err := valcurs.NewValCurs(inputFile)
-
 	if err != nil {
-		fmt.Printf("Error parsing ValCurs: %s\n", err)
-
-		return
+		panic(fmt.Errorf("read valcurs: %w", err))
 	}
 
 	err = valCurses.ParseValues()
-
 	if err != nil {
-		fmt.Printf("Error parsing values: %s\n", err)
-
-		return
+		panic(fmt.Errorf("parse valcurs: %w", err))
 	}
 
 	valCurses.SortByGreaterValue()
 
 	err = valCurses.Save(cfg.OutputFile)
-
 	if err != nil {
-		fmt.Printf("Error saving result: %s\n", err)
-
-		return
+		panic(fmt.Errorf("save valcurs: %w", err))
 	}
-
 }

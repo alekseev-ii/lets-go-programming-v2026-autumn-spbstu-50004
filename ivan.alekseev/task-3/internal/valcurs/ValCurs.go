@@ -3,6 +3,7 @@ package valcurs
 import (
 	"encoding/json"
 	"encoding/xml"
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -12,6 +13,13 @@ import (
 
 	"golang.org/x/text/encoding/charmap"
 )
+
+const (
+	outputFilePerm = 0o600
+	outputDirPerm  = 0o755
+)
+
+var errUnknownCharset = errors.New("unknown charset")
 
 type ValCurs struct {
 	XMLName xml.Name `xml:"ValCurs"`
@@ -25,7 +33,7 @@ func CharsetReader(charset string, input io.Reader) (io.Reader, error) {
 	case "windows-1251":
 		return charmap.Windows1251.NewDecoder().Reader(input), nil
 	default:
-		return nil, fmt.Errorf("unknown charset: %s", charset)
+		return nil, errUnknownCharset
 	}
 }
 
@@ -37,17 +45,18 @@ func NewValCurs(sourceFile *os.File) (ValCurs, error) {
 	var valCurs ValCurs
 
 	err := decoder.Decode(&valCurs)
+	if err != nil {
+		return valCurs, fmt.Errorf("decode file: %w", err)
+	}
 
-	return valCurs, err
+	return valCurs, nil
 }
 
 func (vc *ValCurs) ParseValues() error {
 	for i := range vc.Valutes {
 		err := vc.Valutes[i].ParseValue()
-
 		if err != nil {
-
-			return err
+			return fmt.Errorf("parse value %s: %w", vc.Valutes[i].Value, err)
 		}
 	}
 
@@ -56,7 +65,6 @@ func (vc *ValCurs) ParseValues() error {
 
 func (vc *ValCurs) SortByGreaterValue() {
 	sort.Slice(vc.Valutes, func(i, j int) bool {
-
 		return vc.Valutes[i].ValueFloat > vc.Valutes[j].ValueFloat
 	})
 }
@@ -64,18 +72,20 @@ func (vc *ValCurs) SortByGreaterValue() {
 func (vc *ValCurs) Save(outputFile string) error {
 	outDir := filepath.Dir(outputFile)
 
-	err := os.MkdirAll(outDir, 0755)
-
+	err := os.MkdirAll(outDir, outputDirPerm)
 	if err != nil {
-
-		return err
+		return fmt.Errorf("mkdir: %w", err)
 	}
+
 	result, err := json.MarshalIndent(&vc.Valutes, "", "\t")
-
 	if err != nil {
-
-		return err
+		return fmt.Errorf("json marshal: %w", err)
 	}
 
-	return os.WriteFile(outputFile, result, 0o600)
+	err = os.WriteFile(outputFile, result, outputFilePerm)
+	if err != nil {
+		return fmt.Errorf("write result: %w", err)
+	}
+
+	return nil
 }
